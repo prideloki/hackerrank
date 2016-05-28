@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"testing"
@@ -9,19 +10,12 @@ import (
 
 func Test01(t *testing.T) {
 	inputs := []string{
-		"1 16",
-		"1 14",
+		"1 486134735",
+		"1 551386163",
+		"1 681080115",
+		"1 98708774",
+		"1 676735757",
 		"3",
-		"2 14",
-		"3",
-		"1 10",
-		"1 8",
-		"1 7",
-		"1 9",
-		"1 3",
-		"1 4",
-		"1 2",
-		"1 1",
 	}
 
 	//create a heap
@@ -33,32 +27,36 @@ func Test01(t *testing.T) {
 			//add
 			num, err := strconv.Atoi(ops[1])
 			if err != nil {
-				t.Fatal(err)
+				log.Fatal(err)
 			}
 			heap = append(heap, num)
-			for i := len(heap) - 1; i >= 0; i-- {
-				heapify(heap, i)
-			}
+			up(heap, len(heap)-1)
+
 		case "2":
 			//del
 			num, err := strconv.Atoi(ops[1])
 			if err != nil {
-				t.Fatal(err)
+				log.Fatal(err)
 			}
 			for index, value := range heap {
 				if num == value {
-					heap[index] = heap[len(heap)-1]
+					n := len(heap) - 1
+					heap[index], heap[n] = heap[n], heap[index]
+					down(heap, index, n)
+					up(heap, index)
 					//remove the last one
 					heap = append(heap[:len(heap)-1])
-					for i := len(heap) - 1; i >= 0; i-- {
-						heapify(heap, i)
-					}
 					break
 				}
 			}
 		case "3":
 			//print
-			fmt.Println(heap[0])
+			if len(heap) > 0 {
+				fmt.Println(heap[0])
+			} else {
+				fmt.Print(0)
+			}
+
 		}
 	}
 }
